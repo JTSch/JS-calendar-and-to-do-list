@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  <meta charset="utf-8">
+</head>
+
+<body>
+
+
+  <script>
+    //the clock
+    var clock = document.createElement('div');
+    clock.className = 'clock'; 
+    var span = document.createElement('span');
+    clock.appendChild(span);
+    document.body.appendChild(clock);
+
+    function getTime() {
+      var clock = document.getElementsByClassName("clock");
+
+      var hours = new Date().getHours();
+        if (hours < 10) hours = '0' + hours;
+            
+      var minutes = new Date().getMinutes();
+        if (minutes < 10) minutes = '0' + minutes;
+            
+      var seconds = new Date().getSeconds();
+        if (seconds < 10) seconds = '0' + seconds;
+        
+      span.innerHTML = hours + ":" + minutes + ":" + seconds; 
+    }
+      
+    var timerId;
+
+    function startClock() {
+      timerId = setInterval(getTime, 1000); 
+      getTime();
+    };
+
+    function stopClock() {
+      clearInterval(timerId);
+      timerId = null; 
+    };
+
+    startClock();
+
+    //the calendar
+    function createCalendar(id, year, month) {
+      var calendar = document.createElement('div');
+      document.body.appendChild(calendar);
+          
+      var table = document.createElement('TABLE');
+      calendar.appendChild(table);
+      table.style.cssText = "border-collapse: collapse; \
+      ;"
+          
+      var tHead = document.createElement("THEAD");
+      table.appendChild(tHead);
+          
+      for(var t = 0; t < 7; t++) {
+        var th = document.createElement('TH');
+        tHead.appendChild(th);
+        th.style.cssText = "border: 1px solid black; \
+        padding: 3px;\
+        text-align: center;\
+        font-size: 17px;\
+        width: 25px;\
+        font-weight: bold; \
+        background-color: #E6E6E6;\
+        ";
+      };
+       // выносится отдельно, т.к. отличается от td.cssText 
+     
+      function insertRow(elem, num) {
+        var tr = document.createElement('TR');
+        elem.appendChild(tr);
+            
+        for(var i = 0; i < num; i++) {
+          var td = document.createElement('TD');
+          tr.appendChild(td);
+          td.style.cssText = th.style.cssText;
+          td.style.fontWeight = '';
+          td.style.backgroundColor = '#ffffff';
+          }
+        };
+        
+        for(var j = 0; j < 5; j++) {
+          insertRow(table, 7)
+        };
+         
+        var weekDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс'];
+        for(var w = 0; w < weekDays.length; w++) {
+          tHead.children[w].textContent = weekDays[w];
+        };
+       
+        var date = new Date(year, month),
+        firstDay = date.getDate(),
+        nextDate = new Date(year, month+1),
+        newDate = nextDate.setDate(0),
+        lastDay = nextDate.getDate(),
+        weekDay = date.getDay();
+        
+        var tds = document.getElementsByTagName('td');
+        var dateNow = new Date(),
+        toDay = dateNow.getDate();
+         
+        for (var c = weekDay-1; c < tds.length; c++) {
+          if (firstDay <= lastDay) {
+          tds[c].innerHTML = firstDay;
+          firstDay == toDay ? tds[c].style.backgroundColor = 'pink' : tds[c].style.backgroundColor = 'none';
+          firstDay++;
+          }
+        };
+    };
+
+      createCalendar('calendar', new Date().getFullYear(), new Date().getMonth() );
+
+      //to-do-list
+    var listTitle = document.createElement('h1');
+    listTitle.textContent = 'Список дел:';
+    listTitle.style.cssText = "font-family: Garamond, Georgia, serif;\
+    font-style: italic\
+    ";
+    document.body.appendChild(listTitle);
+    
+    var input = document.createElement('input');
+    document.body.appendChild(input);
+    input.autofocus = true;
+
+      
+       //submit button
+    var buttonDiv = document.createElement('div'); 
+    document.body.appendChild(buttonDiv);
+    var button = document.createElement('input');
+    buttonDiv.appendChild(button);
+    button.setAttribute('type', 'submit');
+    button.style.cssText = "border-radius: 4px; \
+    display: inline-block; \
+    margin-top: 5px; \
+    ";
+    button.setAttribute('onclick', 'addList()');
+    button.value = "Добавить";
+
+      //delete button
+    var button2 = document.createElement('input');
+    buttonDiv.appendChild(button2);
+    button2.setAttribute('type', 'reset');
+    button2.style.cssText = "border-radius: 4px; \
+    display: inline-block; \
+    margin-top: 5px; \
+    margin-left: 5px; \
+    ";
+    button2.setAttribute('onclick', 'clearList()');
+    button2.value = "Очистить";
+
+    //to-do table
+    /*var listDiv = document.createElement('div');
+    document.body.appendChild(listDiv);
+          
+    var listTable = document.createElement('TABLE');
+    listDiv.appendChild(listTable);
+    listTable.style.cssText = "border-collapse: collapse; \
+    border-bottom: 1px solid grey;\
+    padding: 10px;\
+    ;"
+     var listRow = document.createElement('TR');
+      listTable.appendChild(listRow);
+      listRow.style.cssText = "border-bottom: 1px solid grey;\
+    padding: 20px;\
+    ;"
+    var listCell = document.createElement('TD');
+      listRow.appendChild(listCell);
+        
+    function addList() {
+      var listItem = input.value;
+        if (input.value) {
+          
+          var listSpan = document.createElement('span');
+          listRow.appendChild(listSpan);
+          var listText = document.createTextNode(input.value);
+          listRow.appendChild(listText);
+          input.value = null;
+         };
+     
+    };
+
+    function clearList() {
+     listTable.innerHTML = '';
+    };*/
+
+
+  //to-do list  
+  var ul = document.createElement('ul');
+            
+    function addList() {
+      var listItem = input.value;
+      if (input.value) {
+        var li = document.createElement('li');
+        li.textContent = listItem;
+        var listSpan = document.createElement('span');
+        li.prepend(listSpan);
+        var deleteLi = document.createElement('input');
+        deleteLi.className = 'delete button';
+        li.appendChild(deleteLi);
+        ul.appendChild(li);
+        document.body.appendChild(ul);
+        input.value = null;
+      };
+      li.style.cssText = "font: italic 110% serif;\
+      list-style: none; \
+      ";
+      listSpan.innerHTML = '&#10003';
+      deleteLi.style.cssText = "border-radius: 4px; \
+      display: inline-block; \
+      margin-top: 5px; \
+      margin-left: 35px; \
+       ";
+      deleteLi.value = 'Cross';
+      deleteLi.setAttribute('type', 'reset');
+      deleteLi.setAttribute("onclick", "clearText()");
+   };
+
+   function clearText() {
+        var deleteButton = document.getElementsByClassName('delete button');
+        deleteButton[0].parentElement.remove();
+      };
+
+   function clearList() {
+        ul.innerHTML = '';
+  }
+
+   
+     
+   
+
+    
+   </script>
+
+
+</body>
+
+</html>
